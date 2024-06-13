@@ -9,7 +9,9 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
+import io.opentelemetry.semconv.HttpAttributes;
+import io.opentelemetry.semconv.ServerAttributes;
+import io.opentelemetry.semconv.UrlAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +37,11 @@ public class TracingHttpHandler implements HttpHandler {
                     .extract(Context.current(), exchange.getRequestHeaders(), HeaderGetter.INSTANCE)
             )
             .setSpanKind(SpanKind.SERVER)
-            .setAttribute(SemanticAttributes.NET_HOST_NAME, exchange.getLocalAddress().getHostName())
-            .setAttribute(SemanticAttributes.NET_HOST_PORT, (long) exchange.getLocalAddress().getPort())
-            .setAttribute(SemanticAttributes.HTTP_METHOD, exchange.getRequestMethod())
-            .setAttribute(SemanticAttributes.HTTP_SCHEME, "http")
-            .setAttribute(SemanticAttributes.HTTP_TARGET, "/")
+            .setAttribute(ServerAttributes.SERVER_ADDRESS, exchange.getLocalAddress().getHostName())
+            .setAttribute(ServerAttributes.SERVER_PORT, (long) exchange.getLocalAddress().getPort())
+            .setAttribute(HttpAttributes.HTTP_REQUEST_METHOD, exchange.getRequestMethod())
+            .setAttribute(UrlAttributes.URL_SCHEME, "http")
+            .setAttribute(UrlAttributes.URL_PATH, "/")
             .startSpan();
 
         try (Scope ignored = span.makeCurrent()) {
@@ -95,7 +97,7 @@ public class TracingHttpHandler implements HttpHandler {
 
         @Override
         public void sendResponseHeaders(int status, int length) throws IOException {
-            span.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, status);
+            span.setAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, status);
             exchange.sendResponseHeaders(status, length);
         }
 
