@@ -1,0 +1,31 @@
+name: Java CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Clone repository
+      uses: actions/checkout@v4
+
+    - name: 📥 Set up Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'temurin'
+
+    - name: 📥 Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: ⚒️ Build with Gradle
+      run: ./gradlew build
+
+    - name: 📤 Upload Jar
+      uses: actions/upload-artifact@v4
+      with:
+        name: Jars
+        path: ./build/libs/cct-eval-1.0-all.jar
+        retention-days: 1

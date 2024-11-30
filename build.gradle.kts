@@ -4,8 +4,8 @@ plugins {
 }
 
 group = "cc.tweaked"
-version = "1.0-SNAPSHOT"
-val modVersion = "1.111.0"
+version = "1.0"
+val modVersion = "1.114.2"
 
 java {
     toolchain {
@@ -18,7 +18,7 @@ repositories {
 
     exclusiveContent {
         forRepository {
-            maven("https://squiddev.cc/maven")
+            maven("https://maven.squiddev.cc")
         }
         filter {
             includeGroup("cc.tweaked")
@@ -78,6 +78,6 @@ tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJ
 tasks.withType(AbstractArchiveTask::class.java).configureEach {
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
-    dirMode = Integer.valueOf("755", 8)
-    fileMode = Integer.valueOf("664", 8)
+    filePermissions {}
+    dirPermissions {}
 }
